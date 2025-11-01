@@ -7,6 +7,10 @@
     "allowJs": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
+    "jsx": "react-jsx",
+    "paths": {
+      "@src/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/types/*.d.ts"]
 }

@@ -15,20 +15,7 @@
 	<meta name="description" content="">
 </head>
 <body class="page">
-	<div class="page__wrapper">
-		<header class="header">
-			<div class="header__container">
-				<a class="header__logo" href="/">
-					<img class="header__logo-image" src="<%=require('../images/logo.svg')%>" alt="Film! logo" />
-				</a>
-				<button class="header__basket">
-					<span class="header__basket-counter">0</span>
-				</button>
-			</div>
-		</header>
-
-		<main class="gallery"></main>
-	</div>
+	<div id="app"></div>
 
 	<div class="modal" id="modal-container">
 		<div class="modal__container">
@@ -39,7 +26,7 @@
 		</div>
 	</div>
 
-	<div class="modal modal_active">
+	<div class="modal">
 		<div class="modal__container">
 			<button class="modal__close" aria-label="закрыть"></button>
 			<div class="modal__content">

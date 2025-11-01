@@ -1,0 +1,377 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "WebLarek",
+    "version": "1.0.0",
+    "description": ""
+  },
+  "servers": [
+    {
+      "url": "{{baseUrl}}"
+    }
+  ],
+  "paths": {
+    "/product/": {
+      "get": {
+        "summary": "Product List",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": {
+                      "type": "integer"
+                    },
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "image": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "price": {
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/product/854cef69-976d-4c2a-a18c-2aa45046c390": {
+      "get": {
+        "summary": "Product Item",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "image": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "category": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/order": {
+      "post": {
+        "summary": "Order",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "total": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Product not found",
+            "headers": {
+              "X-Powered-By": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Content-Length": {
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "ETag": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Date": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Connection": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Keep-Alive": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "payment": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "format": "utc-millisec"
+                  },
+                  "address": {
+                    "type": "string"
+                  },
+                  "total": {
+                    "type": "integer"
+                  },
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
