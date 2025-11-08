@@ -1,65 +1,118 @@
-import { createSelector, createSlice } from '@reduxjs/toolkit'
-import type { PayloadAction } from '@reduxjs/toolkit'
+import { makeAutoObservable } from 'mobx';
 import { paths } from '@src/api';
 
-type Order = {
-	payment: 'online' | 'offline'
-	address: string
-	email: string
-	phone: string
-	products: paths['/product/']['get']['responses']['200']['content']['application/json']['items']
-}
+class OrderStore {
+	payment: 'online' | 'offline' = 'online';
+	address = '';
+	email = '';
+	phone = '';
+	products: paths['/product/']['get']['responses']['200']['content']['application/json']['items'] = [];
 
-const initialState: Order = {
-	payment: 'online',
-	address: '',
-	email: '',
-	phone: '',
-	products: []
-}
-
-export const counterSlice = createSlice({
-	name: 'counter',
-	initialState,
-	reducers: (create) => ({
-		addProduct: create.reducer((state, action: PayloadAction<paths['/product/']['get']['responses']['200']['content']['application/json']['items'][number]>) => {
-			if (!state.products.some(({id}) => id === action.payload.id)) {
-				state.products.push(action.payload)
-			}
-		}),
-		removeProduct: create.reducer((state, action: PayloadAction<string>) => {
-			state.products = state.products.filter(({id}) => id !== action.payload)
-		}),
-		setPayment: create.reducer((state, action: PayloadAction<'online' | 'offline'>) => {
-			state.payment = action.payload
-		}),
-		setAddress: create.reducer((state, action: PayloadAction<string>) => {
-			state.address = action.payload
-		}),
-		setEmail: create.reducer((state, action: PayloadAction<string>) => {
-			state.email = action.payload
-		}),
-		setPhone: create.reducer((state, action: PayloadAction<string>) => {
-			state.phone = action.payload
-		}),
-		resetState: create.reducer(() => initialState)
-	}),
-	selectors: {
-		selectProductsIds: createSelector([(state: Order) => state.products], (products) => products.map(({id}) => id)),
-		selectProductsLength: (state) => state.products.length,
-		selectProduct: (state, id: string) => state.products.find((product) => product.id === id),
-		selectProductsCost: (state) => state.products.reduce((cost, {price}) => cost + price, 0),
-		selectAreProductsEmpty: (state) => state.products.length === 0,
-		selectIsProductAdded: (state, id: string) => state.products.some((product) => product.id === id),
-		selectPayment: (state) => state.payment,
-		selectAddress: (state) => state.address,
-		selectIsAddressEmpty: (state) => !state.address.length,
-		selectEmail: (state) => state.email,
-		selectPhone: (state) => state.phone,
-		selectAreContactsEmpty: (state) => !state.email || !state.phone,
-		selectOrder: (state) => state
+	constructor() {
+		makeAutoObservable(this);
 	}
-})
 
-export const { addProduct, removeProduct, setPayment, setAddress, setEmail, setPhone, resetState } = counterSlice.actions
-export const {selectProductsIds, selectProductsLength, selectProduct, selectProductsCost, selectAreProductsEmpty, selectIsProductAdded, selectPayment, selectAddress, selectIsAddressEmpty, selectEmail, selectPhone, selectAreContactsEmpty, selectOrder} = counterSlice.selectors
+	addProduct = (product: paths['/product/']['get']['responses']['200']['content']['application/json']['items'][number]) => {
+		if (!this.products.some(({ id }) => id === product.id)) {
+			this.products.push(product);
+		}
+	};
+
+	removeProduct = (id: string) => {
+		this.products = this.products.filter(product => product.id !== id);
+	};
+
+	setPayment = (payment: 'online' | 'offline') => {
+		this.payment = payment;
+	};
+
+	setAddress = (address: string) => {
+		this.address = address;
+	};
+
+	setEmail = (email: string) => {
+		this.email = email;
+	};
+
+	setPhone = (phone: string) => {
+		this.phone = phone;
+	};
+
+	resetState = () => {
+		this.payment = 'online';
+		this.address = '';
+		this.email = '';
+		this.phone = '';
+		this.products = [];
+	};
+
+	get selectProductsIds() {
+		return this.products.map(({ id }) => id);
+	}
+
+	get selectProductsLength() {
+		return this.products.length;
+	}
+
+	selectProductTitle = (id: string) => {
+		return this.products.find(product => product.id === id).title;
+	};
+
+	selectProductPrice = (id: string) => {
+		return this.products.find(product => product.id === id).price;
+	};
+
+	get selectProductsCost() {
+		return this.products.reduce((cost, { price }) => cost + price, 0);
+	}
+
+	get selectAreProductsEmpty() {
+		return this.products.length === 0;
+	}
+
+	selectIsProductAdded = (id: string) => {
+		return this.products.some(product => product.id === id);
+	};
+
+	get selectPayment() {
+		return this.payment;
+	}
+
+	get selectAddress() {
+		return this.address;
+	}
+
+	get selectIsAddressEmpty() {
+		return !this.address.length;
+	}
+
+	get selectEmail() {
+		return this.email;
+	}
+
+	get selectPhone() {
+		return this.phone;
+	}
+
+	get selectAreContactsEmpty() {
+		return !this.email || !this.phone;
+	}
+
+	get selectOrder(): {
+		payment: 'online' | 'offline';
+		address: string;
+		email: string;
+		phone: string;
+		products: paths['/product/']['get']['responses']['200']['content']['application/json']['items'];
+	} {
+		return {
+			payment: this.payment,
+			address: this.address,
+			email: this.email,
+			phone: this.phone,
+			products: this.products
+		};
+	}
+}
+
+export const orderStore = new OrderStore();

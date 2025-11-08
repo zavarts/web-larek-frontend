@@ -1,18 +1,17 @@
-import { useAppSelector } from '@src/store';
-import { selectProductsLength } from '@src/slice';
 import { useState } from 'react';
 import { CartModal } from './elems/cart-modal';
+import { orderStore } from '@src/slice';
+import { observer } from 'mobx-react-lite';
 
-export function Cart() {
+export const Cart = observer(()=> {
 	const [isOpen, setIsOpen] = useState(false);
-	const count = useAppSelector(selectProductsLength);
 
 	return (
 		<>
 			<button className="header__basket" onClick={() => setIsOpen(true)}>
-				<span className="header__basket-counter">{count}</span>
+				<span className="header__basket-counter">{orderStore.selectProductsLength}</span>
 			</button>
 			{isOpen && <CartModal onClose={() => setIsOpen(false)} />}
 		</>
 	);
-}
+})

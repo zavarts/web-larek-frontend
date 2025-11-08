@@ -1,26 +1,23 @@
-import { addProduct, selectIsProductAdded } from '@src/slice';
 import { paths } from '@src/api';
-import { useAppDispatch, useAppSelector } from '@src/store';
+import { orderStore } from '@src/slice';
+import { observer } from 'mobx-react-lite';
 
-export function GalleryItemButton({
+export const GalleryItemButton = observer(({
 																		id,
 																		category,
 																		title,
 																		image,
 																		price,
 																		description
-																	}: paths['/product/']['get']['responses']['200']['content']['application/json']['items'][number]) {
-	const dispatch = useAppDispatch()
-	const isAdded = useAppSelector((state) => selectIsProductAdded(state, id))
-
-	return isAdded ? <span className="card__price">Уже в корзине</span> :<button className="button" onClick={() => {
-		dispatch(addProduct({
+																	}: paths['/product/']['get']['responses']['200']['content']['application/json']['items'][number]) => {
+	return orderStore.selectIsProductAdded(id) ? <span className="card__price">Уже в корзине</span> :<button className="button" onClick={() => {
+		orderStore.addProduct({
 			id,
 			category,
 			title,
 			image,
 			price,
 			description
-		}));
+		});
 	}}>В корзину</button>
-}
+})

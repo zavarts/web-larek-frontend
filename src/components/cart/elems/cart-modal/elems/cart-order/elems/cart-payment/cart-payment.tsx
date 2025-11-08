@@ -1,28 +1,25 @@
-import { useAppDispatch, useAppSelector } from '@src/store';
-import { selectPayment, setPayment } from '@src/slice';
+import { orderStore } from '@src/slice';
+import { observer } from 'mobx-react-lite';
 
-
-export function CartPayment() {
-	const payment = useAppSelector(selectPayment);
-	const dispatch = useAppDispatch();
+export const CartPayment = observer(() => {
 	return (
 		<>
 			<button
 				type="button"
 				className={`button button_alt ${
-					payment === 'online' ? 'button_alt-active' : ''
+					orderStore.selectPayment === 'online' ? 'button_alt-active' : ''
 				}`}
 				onClick={() => {
-					dispatch(setPayment('online'));
+					orderStore.setPayment('online');
 				}}
 			>
 				Онлайн
 			</button>
-			<button type="button" className={`button button_alt ${payment === 'offline' ? 'button_alt-active' : ''}`} onClick={() => {
-				dispatch(setPayment('offline'));
+			<button type="button" className={`button button_alt ${orderStore.selectPayment === 'offline' ? 'button_alt-active' : ''}`} onClick={() => {
+				orderStore.setPayment('offline');
 			}}>
 				При получении
 			</button>
 		</>
 	);
-}
+})

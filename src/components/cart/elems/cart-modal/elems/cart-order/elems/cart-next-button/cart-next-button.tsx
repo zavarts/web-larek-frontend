@@ -1,7 +1,6 @@
-import { useAppSelector } from '@src/store';
-import { selectIsAddressEmpty } from '@src/slice';
+import { orderStore } from '@src/slice';
+import { observer } from 'mobx-react-lite';
 
-export function CartNextButton({next}: {next: () => void}) {
-	const isAddressEmpty = useAppSelector(selectIsAddressEmpty)
-	return <button disabled={isAddressEmpty} onClick={next} className="button">Далее</button>
-}
+export const CartNextButton = observer(({next}: {next: () => void})=> {
+	return <button disabled={orderStore.selectIsAddressEmpty} onClick={next} className="button">Далее</button>
+})

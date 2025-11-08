@@ -1,8 +1,6 @@
-import { useAppDispatch, useAppSelector } from '@src/store';
-import { selectEmail, setEmail } from '@src/slice';
+import { orderStore } from '@src/slice';
+import { observer } from 'mobx-react-lite';
 
-export function CartEmail() {
-	const email = useAppSelector(selectEmail)
-	const dispatch = useAppDispatch();
-	return <input className="form__input" type="email" placeholder="Введите Email" value={email} onChange={(e) => dispatch(setEmail(e.target.value))} />
-}
+export const CartEmail = observer(() => {
+	return <input className="form__input" type="email" placeholder="Введите Email" value={orderStore.selectEmail} onChange={(e) => orderStore.setEmail(e.target.value)} />
+})

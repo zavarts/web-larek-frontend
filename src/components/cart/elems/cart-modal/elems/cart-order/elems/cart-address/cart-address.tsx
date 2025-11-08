@@ -1,8 +1,6 @@
-import { useAppDispatch, useAppSelector } from '@src/store';
-import { selectAddress, setAddress } from '@src/slice';
+import { orderStore } from '@src/slice';
+import { observer } from 'mobx-react-lite';
 
-export function CartAddress() {
-	const address = useAppSelector(selectAddress);
-	const dispatch = useAppDispatch();
-	return <input className="form__input" type="text" placeholder="Введите адрес" value={address} onChange={(e) => dispatch(setAddress(e.target.value))} />
-}
+export const CartAddress = observer(() => {
+	return <input className="form__input" type="text" placeholder="Введите адрес" value={orderStore.selectAddress} onChange={(e) => orderStore.setAddress(e.target.value)} />
+})

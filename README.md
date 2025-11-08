@@ -43,71 +43,124 @@ export const { useGetGalleryQuery, useSendOrderMutation } = apiSlice // для �
 
 Для создания заказ необходимо состояние приложения, которое реализовано в файле slice.ts
 ```typescript
-import { createSelector, createSlice } from '@reduxjs/toolkit' // функции для создания memoized selector и состояния приложения 
-import type { PayloadAction } from '@reduxjs/toolkit' // типизицация входных данных
-import { paths } from '@src/api'; // описаны выше
+import { makeAutoObservable } from 'mobx'; // Для синхронизации view с model
+import { paths } from '@src/api'; // Типы, сгенерированные на основе экспортированного api в postman
 
-type Order = {
-	payment: 'online' | 'offline' // по требованиям только 2 варианта оплаты могут быть
-	address: string // адрес доставки
-	email: string // email получателя
-	phone: string // телефон получателя
-	products: paths['/product/']['get']['responses']['200']['content']['application/json']['items'] // продукты, которые добавлены в корзину
+class OrderStore {
+	payment: 'online' | 'offline' = 'online'; // radio двух значений
+	address = '';
+	email = '';
+	phone = '';
+	products: paths['/product/']['get']['responses']['200']['content']['application/json']['items'] = []; // содержание корзины
+
+	constructor() {
+		makeAutoObservable(this);
+	}
+
+	addProduct = (product: paths['/product/']['get']['responses']['200']['content']['application/json']['items'][number]) => {
+		if (!this.products.some(({ id }) => id === product.id)) {
+			this.products.push(product);
+		}
+	};
+
+	removeProduct = (id: string) => {
+		this.products = this.products.filter(product => product.id !== id);
+	};
+
+	setPayment = (payment: 'online' | 'offline') => {
+		this.payment = payment;
+	};
+
+	setAddress = (address: string) => {
+		this.address = address;
+	};
+
+	setEmail = (email: string) => {
+		this.email = email;
+	};
+
+	setPhone = (phone: string) => {
+		this.phone = phone;
+	};
+
+	resetState = () => {
+		this.payment = 'online';
+		this.address = '';
+		this.email = '';
+		this.phone = '';
+		this.products = [];
+	};
+
+	get selectProductsIds() { // для итерации по выбранным продуктам
+		return this.products.map(({ id }) => id);
+	}
+
+	get selectProductsLength() { // для отображения количества выбранных продуктов
+		return this.products.length;
+	}
+
+	selectProductTitle = (id: string) => {
+		return this.products.find(product => product.id === id).title;
+	};
+
+	selectProductPrice = (id: string) => {
+		return this.products.find(product => product.id === id).price;
+	};
+
+	get selectProductsCost() {
+		return this.products.reduce((cost, { price }) => cost + price, 0);
+	}
+
+	get selectAreProductsEmpty() {
+		return this.products.length === 0;
+	}
+
+	selectIsProductAdded = (id: string) => {
+		return this.products.some(product => product.id === id);
+	};
+
+	get selectPayment() {
+		return this.payment;
+	}
+
+	get selectAddress() {
+		return this.address;
+	}
+
+	get selectIsAddressEmpty() {
+		return !this.address.length;
+	}
+
+	get selectEmail() {
+		return this.email;
+	}
+
+	get selectPhone() {
+		return this.phone;
+	}
+
+	get selectAreContactsEmpty() {
+		return !this.email || !this.phone;
+	}
+
+	get selectOrder(): {
+		payment: 'online' | 'offline';
+		address: string;
+		email: string;
+		phone: string;
+		products: paths['/product/']['get']['responses']['200']['content']['application/json']['items'];
+	} {
+		return {
+			payment: this.payment,
+			address: this.address,
+			email: this.email,
+			phone: this.phone,
+			products: this.products
+		};
+	}
 }
 
-const initialState: Order = {
-	payment: 'online',
-	address: '',
-	email: '',
-	phone: '',
-	products: []
-} // начальное состояние заказа/приложения
-
-export const counterSlice = createSlice({
-	name: 'counter',
-	initialState,
-	reducers: (create) => ({
-		addProduct: create.reducer((state, action: PayloadAction<paths['/product/']['get']['responses']['200']['content']['application/json']['items'][number]>) => { // добавление продукта в корзину (получаем dto продукта)
-			if (!state.products.some(({id}) => id === action.payload.id)) {
-				state.products.push(action.payload)
-			}
-		}),
-		removeProduct: create.reducer((state, action: PayloadAction<string>) => { // удаление продукта из корзины (по id)
-			state.products = state.products.filter(({id}) => id !== action.payload)
-		}),
-		setPayment: create.reducer((state, action: PayloadAction<'online' | 'offline'>) => { // изменение способа оплаты
-			state.payment = action.payload
-		}),
-		setAddress: create.reducer((state, action: PayloadAction<string>) => { // изменение адреса получателя
-			state.address = action.payload
-		}),
-		setEmail: create.reducer((state, action: PayloadAction<string>) => { // изменение email получателя
-			state.email = action.payload
-		}),
-		setPhone: create.reducer((state, action: PayloadAction<string>) => { // изменение телефона получателя
-			state.phone = action.payload
-		}),
-		resetState: create.reducer(() => initialState) // установить начальное состояние заказ после его оформления
-	}),
-	selectors: {
-		selectProductsIds: createSelector([(state: Order) => state.products], (products) => products.map(({id}) => id)), // id продуктов в коризине
-		selectProductsLength: (state) => state.products.length, // количество продуктов в коризине (для её иконки на главной странице)
-		selectProduct: (state, id: string) => state.products.find((product) => product.id === id), // выбираем продукт по его id
-		selectProductsCost: (state) => state.products.reduce((cost, {price}) => cost + price, 0), // текущая цена корзины
-		selectAreProductsEmpty: (state) => state.products.length === 0, // обработка случая, когда корзина пуста
-		selectIsProductAdded: (state, id: string) => state.products.some((product) => product.id === id), // по требованиям количество продукта максимум 1
-		selectPayment: (state) => state.payment, // текущий способ оплаты
-		selectAddress: (state) => state.address, // текущий адрес получателя
-		selectIsAddressEmpty: (state) => !state.address.length, // заполнено ли поле адреса получателя
-		selectEmail: (state) => state.email, // текущая почта получателя
-		selectPhone: (state) => state.phone, // текущий телефон получателя
-		selectAreContactsEmpty: (state) => !state.email || !state.phone, // заполнения ли телефон с почтой получателя
-		selectOrder: (state) => state // выбора всего заказа для его дальнейшего отправления на сервер
-	}
-})
-
-export const { addProduct, removeProduct, setPayment, setAddress, setEmail, setPhone, resetState } = counterSlice.actions
-export const {selectProductsIds, selectProductsLength, selectProduct, selectProductsCost, selectAreProductsEmpty, selectIsProductAdded, selectPayment, selectAddress, selectIsAddressEmpty, selectEmail, selectPhone, selectAreContactsEmpty, selectOrder} = counterSlice.selectors
+export const orderStore = new OrderStore();
 ```
 
 ### Описание view
